@@ -79,3 +79,7 @@ adb install app-debug.apk
 
 - Some broadcasters require a browser-like User-Agent or an explicit HLS MIME type; the player already sends a desktop Chrome User-Agent.
 - Low-end TVs may not handle 4 HD streams: use the **Low** quality cap and/or the 2-tile layout.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
