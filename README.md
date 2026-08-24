@@ -1,50 +1,73 @@
-# Multi TG — App Android TV multi-schermo
+# Multi TG — Multi-screen news app for Android TV
 
-App per Smart TV Android che mostra **2 o 4 telegiornali (stream m3u8) in contemporanea**, con selezione audio, fullscreen e timer di spegnimento.
+**Multi TG** turns an Android TV into a "newsroom wall": it plays **2 or 4 live TV channels (HLS `.m3u8` streams) side by side**, letting you pick which one you hear, jump to fullscreen, and set a sleep timer — all from the remote control.
 
-## Installazione sulla TV
+## What it's for
 
-`MultiTG.apk` è il file da installare. Due modi:
+- Watch several news channels at once (e.g. national + international + 24h news) and switch audio between them with a single key.
+- Keep a TV running unattended as an always-on multi-channel monitor: streams auto-reconnect, the screen never sleeps, and the app can start by itself when the TV powers on.
+- Works with any HLS live stream, so it is not tied to a specific broadcaster.
 
-**Con chiavetta USB / app "Send Files to TV":** copia `MultiTG.apk` sulla TV, aprilo con un file manager e installa (abilita "Origini sconosciute" nelle impostazioni della TV se richiesto).
+Built with Kotlin and [Media3 / ExoPlayer](https://developer.android.com/media/media3). Tested on a Xiaomi Fire TV (Android 9); minimum API 26.
 
-**Con ADB dal Mac** (TV e Mac sulla stessa rete, "Debug USB/rete" attivo sulla TV):
-```
-adb connect IP_DELLA_TV
-adb install MultiTG.apk
-```
+## Features
 
-## Uso con il telecomando
+- **2 or 4 tile grid**, each tile an independent player.
+- **Audio selection**: only one tile plays sound; the others are muted (audio track disabled to save resources).
+- **Fullscreen** on the selected tile; other players are paused to keep the TV responsive.
+- **Quality cap** per tile (Low / Medium / High) for low-power TVs.
+- **Sleep timer**: 15 / 30 / 60 / 90 / 120 minutes (countdown shown in the corner, app closes when it expires).
+- **Editable channels**: name and URL of the 4 channels, saved permanently.
+- **Auto-restart** of a stream every 4 seconds on error or interruption.
+- **Auto-launch on boot / screen on** (foreground service, toggle in the menu).
+- On-screen clock, keep-screen-on.
 
-| Tasto | Azione |
+## Remote control
+
+| Key | Action |
 |---|---|
-| Frecce | Ti muovi tra i riquadri (bordo giallo = selezionato) |
-| **OK** su un riquadro | Attiva l'**audio** di quel canale (icona 🔊) |
-| **OK** sul riquadro che ha già l'audio | Apre quel canale a **schermo intero** |
-| **INDIETRO** | Dal fullscreen torna alla griglia; dalla griglia chiede se uscire |
-| **OK tenuto premuto** (o tasto MENU) | Apre il **menu** |
+| Arrows | Move between tiles (yellow border = selected) |
+| **OK** on a tile | Give the **audio** to that channel (🔊 icon) |
+| **OK** on the tile that already has audio | Open it **fullscreen** |
+| **BACK** | Fullscreen → back to grid; from the grid, asks to exit |
+| **Long-press OK** (or MENU) | Open the **menu** |
 
-## Menu (OK lungo)
+## Menu (long-press OK)
 
-- **Layout 2 / 4 finestre** — passa da 2 a 4 riquadri e viceversa
-- **Timer di spegnimento** — 15 / 30 / 60 / 90 / 120 minuti (conto alla rovescia in basso a destra; allo scadere l'app si chiude)
-- **Modifica canali** — nome e URL m3u8 dei 4 canali (salvati in modo permanente)
-- **Riavvia tutti gli stream**
-- **Esci dall'app**
+- **Layout 2 / 4 tiles**
+- **Tile quality** Low / Medium / High
+- **Sleep timer**
+- **Edit channels** — name and `.m3u8` URL of each channel
+- **Auto-start on boot** on/off
+- **Restart all streams**
+- **Exit**
 
-## Canali
+## Channels
 
-Alla prima apertura i 4 riquadri usano uno stream demo di test. Inserisci i tuoi URL m3u8 da **menu → Modifica canali**. Digitare URL lunghi col telecomando è scomodo: conviene farlo una volta sola (restano salvati), oppure con una tastiera USB attaccata alla TV, oppure via ADB.
+Stream URLs are **not included** in this repository. The default entries in
+[`MainActivity.kt`](MultiTG/app/src/main/java/com/donarosso/multitv/MainActivity.kt) are placeholders (`INSERISCI_URL_M3U8`): replace them with your own HLS URLs before building, or enter them on the TV via **Menu → Edit channels**. Typing long URLs with the remote is tedious: do it once (they are saved), or use a USB keyboard or ADB.
 
-## Funzionamento continuo
+## Building
 
-- Se uno stream si interrompe o dà errore, l'app **riprova automaticamente ogni 4 secondi** finché non torna.
-- Lo schermo non va mai in standby mentre l'app è aperta.
-
-## Ricompilare l'APK (sorgenti in `MultiTG/`)
+Requirements: JDK 17, Android SDK, Gradle 8.x.
 
 ```
-export JAVA_HOME=/opt/homebrew/opt/openjdk@17
+export JAVA_HOME=/opt/homebrew/opt/openjdk@17   # or your JDK 17 path
 cd MultiTG
 gradle assembleDebug     # APK in app/build/outputs/apk/debug/
 ```
+
+## Installing on the TV
+
+**USB stick / "Send Files to TV" / Downloader app:** copy the APK to the TV, open it with a file manager and install (enable "Unknown sources" if asked).
+
+**ADB** (TV and computer on the same network, network debugging enabled on the TV):
+```
+adb connect TV_IP
+adb install app-debug.apk
+```
+
+## Notes
+
+- Some broadcasters require a browser-like User-Agent or an explicit HLS MIME type; the player already sends a desktop Chrome User-Agent.
+- Low-end TVs may not handle 4 HD streams: use the **Low** quality cap and/or the 2-tile layout.
