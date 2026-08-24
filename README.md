@@ -2,6 +2,14 @@
 
 **Multi TG** turns an Android TV into a "newsroom wall": it plays **2 or 4 live TV channels (HLS `.m3u8` streams) side by side**, letting you pick which one you hear, jump to fullscreen, and set a sleep timer — all from the remote control.
 
+## Screenshots
+
+| 4-tile grid | Fullscreen |
+|---|---|
+| ![4-tile grid](docs/grid.jpg) | ![Fullscreen](docs/fullscreen.jpg) |
+
+*Grid with four channels (channel name on each tile, clock on top); the selected tile opened fullscreen.*
+
 ## What it's for
 
 - Watch several news channels at once (e.g. national + international + 24h news) and switch audio between them with a single key.
